@@ -23,10 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     EditText inputLengt;
     ImageView copyPass;
-    Button create,clear;
+    Button create, clear;
     TextView showPassword;
     boolean doubleBackToExitPressedOnce = false;
-
 
 
     @Override
@@ -45,13 +44,16 @@ public class MainActivity extends AppCompatActivity {
         clear = findViewById(R.id.clear);
 
 
-
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int length = Integer.parseInt(inputLengt.getText().toString());
-                String result = String.valueOf(generatePassword(length));
-                showPassword.setText(result);
+                if (!inputLengt.getText().toString().isEmpty()) {
+                    int length = Integer.parseInt(inputLengt.getText().toString());
+                    String result = String.valueOf(generatePassword(length));
+                    showPassword.setText(result);
+                } else
+                    Toast.makeText(v.getContext(), "Please input length of password!", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -62,14 +64,19 @@ public class MainActivity extends AppCompatActivity {
                 inputLengt.setText(null);
             }
         });
+
         copyPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("label", showPassword.getText().toString());
-                clipboardManager.setPrimaryClip(clipData);
+                if (!showPassword.getText().toString().isEmpty()) {
+                    ClipData clipData = ClipData.newPlainText("label", showPassword.getText().toString());
+                    clipboardManager.setPrimaryClip(clipData);
+                    Toast.makeText(v.getContext(), "Save to clipboard", Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(v.getContext(), "Please create Password first!", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(v.getContext(), "Save to clipboard", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -89,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         password[2] = specialCharacters.charAt(random.nextInt(specialCharacters.length()));
         password[3] = numbers.charAt(random.nextInt(numbers.length()));
 
-        for(int i = 4; i< length ; i++) {
+        for (int i = 4; i < length; i++) {
             password[i] = combinedChars.charAt(random.nextInt(combinedChars.length()));
         }
         return password;
